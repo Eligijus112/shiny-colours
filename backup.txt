@@ -1,0 +1,18 @@
+tabPanel("Decomposition of colours", 
+           
+           sidebarLayout(
+             sidebarPanel(
+               fileInput("myFile",
+                         "Please upload your beautiful photo", accept = c('image/png', 'image/jpeg')),
+              
+               actionButton("Decomposition", "Show the decomposition of colours of the photograph"),
+               uiOutput("numb")
+             ),
+            
+             mainPanel(
+               plotOutput("origPic"),
+               plotOutput("barplot")
+             )
+           )      
+           
+     )
