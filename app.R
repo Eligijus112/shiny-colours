@@ -4,9 +4,12 @@ library(jpeg)
 
 # Define UI for application that draws a histogram
 ui <- navbarPage(title="Photo tool",
-  
+                   
   tabPanel("Decolorize", 
-           
+           tags$head(
+             tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+           ),
+           # includeCSS("www/style.css"),            
    sidebarLayout(
       sidebarPanel(
          fileInput("myFile",
@@ -21,6 +24,7 @@ ui <- navbarPage(title="Photo tool",
       ),
       
       mainPanel(
+        
         fluidRow( splitLayout(cellWidths = c("50%", "50%"), 
         uiOutput("myImage"), 
         uiOutput("plot.black")
@@ -63,8 +67,8 @@ server <- function(input, output) {
     inFile <- input$myFile
     if (is.null(inFile))
       return()
-
-    do.call(file.remove, list(list.files("www", full.names = TRUE)))
+    
+    do.call(file.remove, list(setdiff(list.files("www", full.names = TRUE), "www/style.css")))
     file.copy(inFile$datapath, file.path("www/orig.jpg") )
     
     output$heigh <- renderUI({
@@ -137,7 +141,7 @@ observeEvent(input$refresh, {
     if (is.null(inFile))
       return()
     
-    do.call(file.remove, list(list.files("www", full.names = TRUE)))
+    do.call(file.remove, list(setdiff(list.files("www", full.names = TRUE), "www/style.css")))
     file.copy(inFile$datapath, file.path("www/orig.jpg") )
     
     output$heigh2 <- renderUI({
