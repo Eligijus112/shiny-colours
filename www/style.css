@@ -4501,7 +4501,9 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   border-color: transparent;
 }
 .navbar-default .navbar-brand {
-  color: #ffffff;
+  color: #00ffff;
+	 font-family: "Jazz LET", fantasy;
+		font-size: 150%;
 }
 .navbar-default .navbar-brand:hover,
 .navbar-default .navbar-brand:focus {
@@ -4512,7 +4514,9 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   color: #ffffff;
 }
 .navbar-default .navbar-nav > li > a {
-  color: #ffffff;
+  color: #00ffff;
+		font-family: "Jazz LET", fantasy;
+		font-size: 150%;
 }
 .navbar-default .navbar-nav > li > a:hover,
 .navbar-default .navbar-nav > li > a:focus {
@@ -4524,6 +4528,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-default .navbar-nav > .active > a:focus {
   color: #ffffff;
   background-color: #28415b;
+		
 }
 .navbar-default .navbar-nav > .disabled > a,
 .navbar-default .navbar-nav > .disabled > a:hover,
@@ -6768,6 +6773,8 @@ button.close {
 }
 .navbar-brand {
   line-height: 1;
+		font-weight: bold;
+
 }
 .navbar-form .form-control {
   background-color: white;
@@ -7043,4 +7050,18 @@ a.list-group-item-danger.active:focus {
 }
 .panel-default > .panel-heading {
   background-color: #464545;
+}
+
+footer{
+	text-align: center;
+	font-size: 0.8em;
+	clear: both;
+	padding-top: 50px;
+	color: #ccc
+} 
+
+ .social{
+	width: 25px;
+	height: 25px;
+	margin: 0 5px;
 }

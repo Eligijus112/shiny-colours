@@ -1,38 +1,46 @@
 library(shiny)
 library(imager)
 library(jpeg)
+library(shinyRGL)
 
-# Define UI for application that draws a histogram
+# UI part -----------------------------------------------------------------
+
 ui <- navbarPage(title="Photo tool",
-                   
-  tabPanel("Decolorize", 
+ 
+# ------------ |--- Removing colours  ----------
+                 
+  tabPanel("Decolorize",
+           
            tags$head(
              tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
            ),
-           # includeCSS("www/style.css"),            
+                       
    sidebarLayout(
       sidebarPanel(
          fileInput("myFile",
                      "Please upload your beautiful photo", accept = c('image/png', 'image/jpeg')),
          uiOutput("heigh"),
          actionButton("Black", "Make picture black and white"),
-         
          uiOutput("R.col"),
          uiOutput("G.col"),
-         uiOutput("B.col"),
-         actionButton("refresh", "Refresh")
+         uiOutput("B.col")
       ),
       
       mainPanel(
-        
         fluidRow( splitLayout(cellWidths = c("50%", "50%"), 
         uiOutput("myImage"), 
         uiOutput("plot.black")
         )
       ))
+   ), 
+   hr(),
+   tags$div(
+       includeHTML("footer.html")
    )
   ),
   
+# ------------ |--- Decomposition of colours  ----------
+
   tabPanel("Decomposition of colours", 
            
            sidebarLayout(
@@ -41,28 +49,62 @@ ui <- navbarPage(title="Photo tool",
                          "Please upload your beautiful photo", accept = c('image/png', 'image/jpeg')),
                uiOutput("heigh2"),
                
-               actionButton("Decomposition", "Show the decomposition of colours of the photograph"),
-               uiOutput("numb"),
-               actionButton("refresh", "Refresh")
+               actionButton("Decomposition", "Decompose the colours"),
+               uiOutput("numb")
              ), 
              
-             mainPanel (        fluidRow(splitLayout(cellWidths = c("50%", "50%"), 
+             mainPanel (fluidRow(splitLayout(cellWidths = c("50%", "50%"), 
                                                       uiOutput("myImage2"), 
                                                       plotOutput("barplot", height = 500, width=450)
              ))
-           )      
+           )
            
+  ),
+  hr(),
+  tags$div(
+    includeHTML("footer.html")
   )
+  ),
   
-  )  
-  
-  
+# ------------ |--- Intensify colours  ----------
+
+tabPanel("Intensify colours", 
+         sidebarLayout(
+           sidebarPanel(
+             fileInput("myFile3",
+                       "Please upload your beautiful photo", accept = c('image/png', 'image/jpeg')),
+             uiOutput("heigh3"),
+             actionButton("intense", "Intensify colours"),
+             uiOutput("R.liambda"),
+             uiOutput("G.liambda"),
+             uiOutput("B.liambda")
+           ),
+           
+           mainPanel (fluidRow(splitLayout(cellWidths = c("50%", "50%"), 
+                                           # tableOutput("text"),
+                                           # tags$head(tags$style("#text {background-color: red; }", media="screen", type="text/css")),
+                                           uiOutput("myImage3"),
+                                           uiOutput("plot.intense")
+                                           
+           ))
+           ) 
+             
+         ),
+         hr(),
+         tags$div(
+           includeHTML("footer.html")
+         )  
+)
+
 )
 
 
-# Define server logic required to draw a histogram
+# Server part -------------------------------------------------------------
+
 server <- function(input, output) {
    
+# ------------ |--- Decolorize photo (server)  ----------
+  
   observeEvent(input$myFile, {
     inFile <- input$myFile
     if (is.null(inFile))
@@ -73,7 +115,7 @@ server <- function(input, output) {
     
     output$heigh <- renderUI({
       
-      sliderInput("height", "Select height in px", min=0, max=1000, value=500) 
+      sliderInput("height", "Select size in px", min=0, max=1000, value=500) 
       
     })
     
@@ -134,19 +176,19 @@ observeEvent(input$refresh, {
     
   })
   
-  # Decomposition of colours ------------------------------------------------
-  
+ # ------------ |--- Decomposition of colours (server)  ----------
+ 
   observeEvent(input$myFile2, {
     inFile <- input$myFile2
     if (is.null(inFile))
       return()
-    
-    do.call(file.remove, list(setdiff(list.files("www", full.names = TRUE), "www/style.css")))
+ 
+    do.call(file.remove, list(setdiff(list.files("www", full.names = TRUE), c("www/style.css", "www/default.jpg"))))
     file.copy(inFile$datapath, file.path("www/orig.jpg") )
     
     output$heigh2 <- renderUI({
       
-      sliderInput("height2", "Select height in px", min=0, max=1000, value=600) 
+      sliderInput("height2", "Select size in px", min=0, max=1000, value=500) 
       
     })
     
@@ -157,24 +199,6 @@ observeEvent(input$refresh, {
     })
     
   })
-  
-  observe({
-    output$myImage2 <- renderUI({
-      
-      img(src = "orig.jpg", width = as.integer(input$height2))
-      
-    })
-  })
-  
-  observeEvent(input$refresh, {
-    
-    output$myImage2 <- renderUI({
-      
-      img(src = "orig.jpg", width = as.integer(input$height))
-      
-    })
-  })
-  
   
   observeEvent(input$Decomposition, {
     
@@ -233,9 +257,73 @@ observeEvent(input$refresh, {
     
   })
   
+  # ------------ |--- Intensify colours  ----------
+  
+  observeEvent(input$myFile3, {
+    inFile <- input$myFile3
+    if (is.null(inFile))
+      return()
+    
+    do.call(file.remove, list(setdiff(list.files("www", full.names = TRUE), c("www/style.css", "www/default.jpg"))))
+    file.copy(inFile$datapath, file.path("www/orig.jpg") )
+    
+    output$heigh3 <- renderUI({
+      
+      sliderInput("height3", "Select size in px", min=0, max=1000, value=500) 
+      
+    })
+    
+    output$myImage3 <- renderUI({
+      
+      img(src = "orig.jpg", width = as.integer(input$height3))
+      
+    })
+    
+  })
+  
+  pic <- reactive({ 
+    
+    readJPEG("www/orig.jpg")
+    
+    })
+  
+  observeEvent(input$intense, {
+    
+    output$R.liambda <- renderUI({
+      
+      sliderInput("R.l", "Please select the constant for red", min=0, max=1, value=0)
+      
+    })
+    
+    output$G.liambda <- renderUI({
+      
+      sliderInput("G.l", "Please select the constant for green", min=0, max=1, value=0)
+      
+    })
+    
+    output$B.liambda <- renderUI({
+      
+      sliderInput("B.l", "Please select the constant for blue", min=0, max=1, value=0)
+      
+    })
+    
+    output$plot.intense <- renderUI({
+      
+      p <- readJPEG("www/orig.jpg")
+      
+      p[ , , 1] <- as.matrix(p[ , , 1] * (1 - input$R.l)) +  input$R.l
+      p[ , , 2] <- as.matrix(p[ , , 2] * (1 - input$G.l)) +  input$G.l
+      p[ , , 3] <- as.matrix(p[ , , 3] * (1 - input$B.l)) +  input$B.l
+      
+      writeJPEG(p, target = "www/intense.jpg")
+      
+      img(src = "intense.jpg", width = as.integer(input$height3))  
+      
+    })
+    
+  })
+
 }
-
-
 
 # Run the application 
 shinyApp(ui = ui, server = server)
