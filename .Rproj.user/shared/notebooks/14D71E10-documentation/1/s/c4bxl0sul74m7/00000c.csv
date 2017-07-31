@@ -1,0 +1,4 @@
+"0","img(src = ""output/bw.jpg"", width = as.integer(input$height)) 
+"
+"2","Error in tag(""img"", list(...)) : object 'input' not found
+"

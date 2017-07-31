@@ -7,6 +7,21 @@ library(shinyRGL)
 
 ui <- navbarPage(title="Photo tool",
  
+# ------------ |--- Documentation  ----------
+                 
+tabPanel("Documentation",
+         
+         tags$head(
+           tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+         ),
+         
+         tags$iframe(style="height:600px; width:100%", src="doc/documentation.pdf"),
+         
+         hr(),
+         tags$div(
+           includeHTML("footer.html")
+         )),
+
 # ------------ |--- Removing colours  ----------
                  
   tabPanel("Decolorize",
@@ -160,11 +175,6 @@ observeEvent(input$refresh, {
     output$plot.black <- renderUI({
       
       p <- readJPEG("www/orig.jpg")
-      
-      # Making the photo black and white ----------------------------------------
-      
-      ## We will use the luminosity algorithm 
-      ## r * R + g * G + b * B
       
       greyscale <- input$R * p[ , , 1] + input$G *  p[ , , 2] + input$B * p[, , 3] 
 

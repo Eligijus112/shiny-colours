@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "---\nheader-includes:\n  - \\usepackage[L7x]{fontenc}\n  - \\bibliographystyle{plainnat}\noutput:\n pdf_document: \n    fig_caption: yes\n    keep_tex: yes\n    number_sections: no\n    latex_engine: pdflatex\nmargin-left: 6.5in\nmargin-top: 9in\nfontsize: 12pt    \npapersize: A4\nfontfamily: palatino\n---\n\n```{r setup, include=FALSE}\nlibrary(jpeg)\nlibrary(RefManageR)\n\nbib <- ReadBib(\"bibliography.bib\", check = FALSE)\nBibOptions(check.entries = FALSE, style = \"markdown\", bib.style = \"alphabetic\", cite.style = 'alphabetic')\n```\n\n\n\\vskip 300pt\n\\bigskip\n\\centerline{\\bf \\Large \\textbf{Photograph decomposition using R}}\n\\vskip 120pt\n\\begin{center}\n\n\\includegraphics[width=160mm]{img/font}\n\n\\vspace{4mm}\n\n\\end{center}\n\\vskip 120pt\n\\centerline{\\Large Eligijus Bujokas}\n\\vskip 60pt\n\\centerline{\\large \\textbf{VILNIUS 2017}}\n\\thispagestyle{empty}\n\n\\newpage\n\n\\tableofcontents\n\n\\newpage\n\n\\section{RGB system in photographs}\n\nEvery (colored) photograph can be viewed as a three-dimensional array. Each dimension represents the red, green and blue parts of the photo. Each dimension is a N x M matrix, where N is the length of the picture and M is the height of the picture. The height and the length of every picture is measured not in meters but in pixels. Every pixel has it's coordinates and the value of the pixel (usually from 0 to 1) indicates the intensity of either red, green or blue color. The \"jpeg\" package `r Cite(bib, 'jpeg', .opts = list(cite.style = \"numeric\"))` in R `r Cite(bib, 'Rstudio', .opts = list(cite.style = \"numeric\"))` lets us easily import any jpeg format photo from our machine and decompose it into an array of 3 dimensions. \n\n![Picture of zebras](img/zebras.jpg)\n\nThe size of picture in figure 1 is equal to 800 x 399 pixels.\n\n```{r jpeg upload, comment=NA}\nlibrary(jpeg)\n\nphoto <- readJPEG(\"img/zebras.jpg\")\ndim(photo)\n\ndim(photo[, , 1])\n\nphoto[, , 1][1:3, 1:3]\n```\n\nAs we can see from the code results, the $\\textit{readJPEG}$ function reads the photo and gives us an output which represents how our computers see photographs. The shown matrix represent the first 3 x 3 pixels of the red colour. Notice that every value in the matrix is between 0 and 1. This simple decomposition of the photos to the RGB system lets us do powerfull things with it. \n\n\\newpage\n\n\\section{Decolorize}\n\nThe most basic operation which can be done with any given photograph is to make it black and white. In order to do this we need to make a three dimensional array into a single dimension matrix. Let us remember the picture in figure 1 which dimension is 800 x 399 x 3 (the 3 means that it has the red, green and blue dimensions). We will denote the black and white picture as BW picture (short for black and white). Then one of the simplest methods to make a picture colorless is using the weighted mean:\n\n\\[\nBW_{N x M}  = c_{1} R_{N x M} + c_{2} G_{N x M} + c_{3} B_{N x M}\n\\]\n\nWhere\n\n$R_{N x M}$ - an N x M matrix which values represent the intensity of the red color. \n\n$G_{N x M}$ - an N x M matrix which values represent the intensity of the green color. \n\n$B_{N x M}$ - an N x M matrix which values represent the intensity of the blue color. \n\n$c_{i} \\in R, \\forall i$\n\nIn order to avoid 'dead' pixels the equality:\n\n$\\Sigma^{n}_{i = 1} c_{i} = 1$\n\nShould hold. \n\n```{r decolorize, comment=NA}\nBW <- 0.3 * photo[, , 1] + 0.3 * photo[, , 2] + 0.4 * photo[, ,3]\nwriteJPEG(BW, target = \"img/bw.jpg\")\n```\n![Decolorized picture of zebras](img/bw.jpg)\n\n\\newpage\n\n\\section{Decomposition of colours}\n\n\n\n\n\\newpage\n\n# References\n\n```{r references, results=\"asis\", echo=F, warning=F}\n# PrintBibliography(bib, .opts = list(bib.style = \"numeric\"))\nPrintBibliography(bib)\n```",
+    "created" : 1501357755375.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3565485630",
+    "id" : "7CE6F830",
+    "lastKnownWriteTime" : 1501360570,
+    "last_content_update" : 1501360570612,
+    "path" : "C:/Users/Eligijus/Desktop/Shiny apps/Shiny colours/documentation/documentation.Rmd",
+    "project_path" : null,
+    "properties" : {
+        "last_setup_crc32" : "E137AC0B7fbec35a",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_markdown"
+}
