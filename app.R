@@ -15,7 +15,7 @@ tabPanel("Documentation",
            tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
          ),
          
-         tags$iframe(style="height:600px; width:100%", src="doc/documentation.pdf"),
+          tags$iframe(style="height:600px; width:100%", src="doc/documentation.pdf"),
          
          hr(),
          tags$div(
@@ -117,7 +117,7 @@ tabPanel("Intensify colours",
 # Server part -------------------------------------------------------------
 
 server <- function(input, output) {
-   
+  
 # ------------ |--- Decolorize photo (server)  ----------
   
   observeEvent(input$myFile, {
@@ -143,15 +143,6 @@ server <- function(input, output) {
   })
  
 
-observeEvent(input$refresh, {
-  
-  output$myImage <- renderUI({
-    
-    img(src = "orig.jpg", width = as.integer(input$height))
-    
-  })
-})
-
   observeEvent(input$Black, {
     
     output$R.col <- renderUI({
@@ -169,22 +160,37 @@ observeEvent(input$refresh, {
     output$B.col <- renderUI({
       
       sliderInput("B", "Please select the filter for the blue colour", min=0, max=1, value=0.33)
-      
-    })
     
+    })
+  
     output$plot.black <- renderUI({
       
       p <- readJPEG("www/orig.jpg")
       
-      greyscale <- input$R * p[ , , 1] + input$G *  p[ , , 2] + input$B * p[, , 3] 
-
-      writeJPEG(greyscale, target = "www/bw.jpg")
+      # Making the photo black and white ----------------------------------------
       
-      img(src = "bw.jpg", width = as.integer(input$height))  
+      ## We will use the luminosity algorithm 
+      ## r * R + g * G + b * B
+      
+      greyscale <- input$R * p[ , , 1] + input$G *  p[ , , 2] + input$B * p[, , 3] 
+      
+      writeJPEG(greyscale, target = "www/img/bw.jpg")
+      
+      img(src = "img/bw.jpg", width = as.integer(input$height))  
       
     })
     
+    output$img <- renderImage({
+      
+      list(src = "img/mail.png",
+           width = 400,
+           height = 300,
+           alt = "This is alternate text")
+      
+    }, deleteFile = F)
+ 
   })
+    
   
  # ------------ |--- Decomposition of colours (server)  ----------
  
@@ -325,9 +331,9 @@ observeEvent(input$refresh, {
       p[ , , 2] <- as.matrix(p[ , , 2] * (1 - input$G.l)) +  input$G.l
       p[ , , 3] <- as.matrix(p[ , , 3] * (1 - input$B.l)) +  input$B.l
       
-      writeJPEG(p, target = "www/intense.jpg")
+      writeJPEG(p, target = "www/img/intense.jpg")
       
-      img(src = "intense.jpg", width = as.integer(input$height3))  
+      img(src = "img/intense.jpg", width = as.integer(input$height3))  
       
     })
     

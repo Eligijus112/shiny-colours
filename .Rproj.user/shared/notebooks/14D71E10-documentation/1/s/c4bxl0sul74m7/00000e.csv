@@ -1,0 +1,2 @@
+"0","BW <- 0.3 * photo[, , 1] + 0.3 * photo[, , 2] + 0.4 * photo[, ,3]"
+"0","writeJPEG(BW, target = ""img/bw.jpg"")"

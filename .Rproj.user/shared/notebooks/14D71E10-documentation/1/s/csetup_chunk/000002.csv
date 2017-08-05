@@ -1,4 +1,7 @@
 "0","library(jpeg)"
 "0","library(RefManageR)"
+"0","library(plot3D)"
+"0","library(magrittr)"
+"0","library(plyr)"
 "0","bib <- ReadBib(""bibliography.bib"", check = FALSE)"
 "0","BibOptions(check.entries = FALSE, style = ""markdown"", bib.style = ""alphabetic"", cite.style = 'alphabetic')"
